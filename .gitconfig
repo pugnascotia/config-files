@@ -1,0 +1,20 @@
+[user]
+	#email = 
+	name = Rory Hunter
+[color]
+	ui = true
+[alias]
+	co = checkout
+	ls = log --graph -n 30 --decorate --pretty='format:%Cgreen%h %<(14)%Cred%an %C(auto)%d %Creset%s'
+	st = status
+	exec = "!exec "
+	root = !pwd
+
+	# Yes, yes, I know
+	pish = push
+	piush = push
+	puish = push
+[push]
+	default = simple
+[core]
+	excludesfile = /home/rory/.gitignore
