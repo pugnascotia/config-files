@@ -13,8 +13,9 @@ alias gut=git
 alias fit=git
 alias gti=git
 
-#alias docker='sudo -p "[docker] password for %u: " docker'
-#alias compose='sudo -p "[docker-compose] password for %u: " docker-compose'
-
 # evim == easy vim. BURN IN HELL YOU MONSTER
 alias evim=vim
+
+alias jjs='rlwrap jjs'
+
+alias fig=docker-compose

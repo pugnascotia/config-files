@@ -8,6 +8,9 @@ case $- in
       *) return;;
 esac
 
+export EDITOR=vim
+export VISUAL=vim
+
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
@@ -42,6 +45,7 @@ fi
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
     xterm-color) color_prompt=yes;;
+    screen) color_prompt=yes;;
 esac
 
 # uncomment for a colored prompt, if the terminal has the capability; turned
@@ -180,12 +184,12 @@ export LESS_TERMCAP_ue=$'\E[0m'           # end underline
 export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
 
 
-export JAVA7_HOME=/usr/lib/jvm/jdk-7-oracle-x64
-export JAVA8_HOME=/usr/lib/jvm/jdk-8-oracle-x64
+export JAVA_HOME=/usr/lib/jvm/java-8-oracle/
+export IDEA_JDK=$JAVA_HOME
 
-export JAVA_HOME=$JAVA8_HOME
-
-export PATH="$JAVA_HOME/bin:$PATH"
+export PATH="$HOME/npm/bin:$JAVA_HOME/bin:/opt/node/bin:$PATH"
 
 unset color_reset color_black color_red color_green color_yellow
 unset color_blue color_purple color_cyan color_white
+
+export GOPATH=$HOME

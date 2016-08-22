@@ -1,12 +1,14 @@
 [user]
-	#email = 
 	name = Rory Hunter
+	email = roryhunter2@gmail.com
 [color]
 	ui = true
 [alias]
-	co = checkout
-	ls = log --graph -n 30 --decorate --pretty='format:%Cgreen%h %<(14)%Cred%an %C(auto)%d %Creset%s'
 	st = status
+	co = checkout
+	ls = log --format='%C(yellow)%h %Cred%<(15)%an %C(auto)%d %Creset%s' -n 20
+	dif = diff
+	tags = tag
 	exec = "!exec "
 	root = !pwd
 

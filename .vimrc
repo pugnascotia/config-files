@@ -31,8 +31,8 @@ set shiftwidth=4
 " And tab is four spaces
 set softtabstop=4
 
-" Don't expand tabs
-set noexpandtab
+" Expand tabs
+set expandtab
 
 " Always show the status line
 set laststatus=2
@@ -45,6 +45,10 @@ set linebreak
 
 " And color the active one yellow
 highlight StatusLine ctermfg=yellow
+
+highlight Statement ctermfg=yellow
+
+highlight Search ctermfg=black
 
 " Add 'r' to insert the comment leader when hitting <Enter> in a comment, and
 " 'l' to avoid breaking lines that were already longer than 'textwidth'.
@@ -63,7 +67,7 @@ cab Set set
 iab dts rory.hunter@blackpepper.co.uk <Esc>:r!date<CR>kJA
 
 " Highlight current line
-set cursorline
+" set cursorline
 
 "--------------------------------------------------------------------------
 
@@ -89,3 +93,5 @@ autocmd BufNewFile,BufRead hosts.* set ft=ini
 autocmd BufNewFile,BufRead *.gitignore set ft=config
 
 autocmd BufNewFile,BufRead * if match(getline(1),"node") >= 0 | set filetype=javascript | endif
+
+autocmd BufNewFile,BufEnter,BufRead Dockerfile* setf dockerfile
