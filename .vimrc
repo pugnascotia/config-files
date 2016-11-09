@@ -22,14 +22,14 @@ set incsearch
 " Shotcut for switching windows
 map <Tab> <C-W><C-W>
 
-" Display tabs as 4 spaces
-set tabstop=4
+" Display tabs as 2 spaces
+set tabstop=2
 
-" Shift indentation by four spaces
-set shiftwidth=4
+" Shift indentation by 2 spaces
+set shiftwidth=2
 
-" And tab is four spaces
-set softtabstop=4
+" And tab is 2 spaces
+set softtabstop=2
 
 " Expand tabs
 set expandtab
