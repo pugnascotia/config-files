@@ -8,8 +8,16 @@ case $- in
       *) return;;
 esac
 
+OS_TYPE=`uname -s`
+
 export EDITOR=vim
 export VISUAL=vim
+
+if [ "$OS_TYPE" = Darwin ]; then
+	if [ -r /Applications/Xcode.app/Contents/Developer/usr/share/git-core/git-prompt.sh ]; then
+		. /Applications/Xcode.app/Contents/Developer/usr/share/git-core/git-prompt.sh
+	fi
+fi
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -136,6 +144,10 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
+if [ `uname -s` = Darwin ]; then
+	alias ls='ls -Gp'
+fi
+
 # some more ls aliases
 alias ll='ls -alF'
 alias la='ls -A'
@@ -184,10 +196,15 @@ export LESS_TERMCAP_ue=$'\E[0m'           # end underline
 export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
 
 
-export JAVA_HOME=/usr/lib/jvm/java-8-oracle/
+if [ "$OS_TYPE" = Darwin ]; then
+	export JAVA_HOME=`/usr/libexec/java_home`
+else 
+	export JAVA_HOME=/usr/lib/jvm/java-8-oracle/
+fi
+
 export IDEA_JDK=$JAVA_HOME
 
-export PATH="$HOME/npm/bin:$JAVA_HOME/bin:/opt/node/bin:$PATH"
+export PATH="$HOME/bin:$HOME/npm/bin:$JAVA_HOME/bin:/opt/node/bin:$PATH"
 
 unset color_reset color_black color_red color_green color_yellow
 unset color_blue color_purple color_cyan color_white
