@@ -95,3 +95,6 @@ autocmd BufNewFile,BufRead *.gitignore set ft=config
 autocmd BufNewFile,BufRead * if match(getline(1),"node") >= 0 | set filetype=javascript | endif
 
 autocmd BufNewFile,BufEnter,BufRead Dockerfile* setf dockerfile
+
+autocmd BufNewFile,BufEnter,BufRead .eslintrc setf javascript
+autocmd BufNewFile,BufEnter,BufRead *.json setf javascript

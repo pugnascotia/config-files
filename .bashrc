@@ -32,7 +32,10 @@ HISTFILESIZE=2000
 
 # Don't put certain commands in the history. These must match the entire
 # command.
-HISTIGNORE=fg:bg:vim
+HISTIGNORE=fg:bg:vim:ls
+
+# Ignore some entries when tab completing
+FIGNORE="$FIGNORE:DS_Store"
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -89,14 +92,14 @@ color_cyan='\e[0;36m'         # Cyan
 color_white='\e[0;37m'        # White
 
 
-my_hostname=$HOSTNAME
+my_hostname=$(hostname -s)
 
 if [[ "$my_hostname" == "rory-laptop" ]]; then
     my_hostname="laptop"
 fi
 
 my_jobs() {
-	count=$(jobs | wc -l)
+  count=$(echo $(jobs | wc -l))
 	str=" $count"
 	if [[ $count -eq 0 ]]; then
 		str=""

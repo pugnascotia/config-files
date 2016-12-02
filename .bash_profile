@@ -1,3 +1,17 @@
-#!/bin/bash
+# System-wide .profile for sh(1)
 
-setxkbmap -option ctrl:nocaps
+if [ -x /usr/libexec/path_helper ]; then
+	eval `/usr/libexec/path_helper -s`
+fi
+
+if [ "${BASH-no}" != "no" ]; then
+	[ -r /etc/bashrc ] && . /etc/bashrc
+fi
+
+if [ -r $HOME/.bashrc ]; then
+	. $HOME/.bashrc
+fi
+
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+    . $(brew --prefix)/etc/bash_completion
+fi
