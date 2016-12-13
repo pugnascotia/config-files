@@ -1,5 +1,5 @@
 #!/bin/bash
 
 digoc() {
-	ssh -i ~/.ssh/digitalocean root@$1
+    ssh -i ~/.ssh/digitalocean root@$1
 }
