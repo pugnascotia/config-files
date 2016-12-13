@@ -14,9 +14,12 @@ export EDITOR=vim
 export VISUAL=vim
 
 if [ "$OS_TYPE" = Darwin ]; then
-	if [ -r /Applications/Xcode.app/Contents/Developer/usr/share/git-core/git-prompt.sh ]; then
-		. /Applications/Xcode.app/Contents/Developer/usr/share/git-core/git-prompt.sh
-	fi
+    if [ -r /Applications/Xcode.app/Contents/Developer/usr/share/git-core/git-prompt.sh ]; then
+        . /Applications/Xcode.app/Contents/Developer/usr/share/git-core/git-prompt.sh
+    fi
+
+    # Colourful "ls" please
+    export CLICOLOR=1
 fi
 
 # don't put duplicate lines or lines starting with space in the history.
@@ -68,12 +71,12 @@ force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
+        # We have color support; assume it's compliant with Ecma-48
+        # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+        # a case would tend to support setf rather than setaf.)
+        color_prompt=yes
     else
-	color_prompt=
+        color_prompt=
     fi
 fi
 
@@ -100,26 +103,27 @@ fi
 
 my_jobs() {
   count=$(echo $(jobs | wc -l))
-	str=" $count"
-	if [[ $count -eq 0 ]]; then
-		str=""
-	fi
-	echo "$str"
+    count=$(jobs | wc -l)
+    str=" $count"
+    if [[ $count -eq 0 ]]; then
+        str=""
+    fi
+    echo "$str"
 }
 
 __docker_ps1() {
-	if [[ "$DOCKER_HOST" != "" ]]; then
-		if [[ "$(which lolcat)" == "" ]]; then
-			color_red='\e[0;31m'
-			echo -e " ${color_red}⚡" | lolcat
-		else
-			echo " ⚡" | lolcat -f
-		fi
-	fi
+    if [[ "$DOCKER_HOST" != "" ]]; then
+        if [[ "$(which lolcat)" == "" ]]; then
+            color_red='\e[0;31m'
+            echo -e " ${color_red}⚡" | lolcat
+        else
+            echo " ⚡" | lolcat -f
+        fi
+    fi
 }
 
 if [ "$color_prompt" = yes ]; then
-	PS1="\${debian_chroot:+(\$debian_chroot)}${color_cyan}\u${color_red}@${color_cyan}${my_hostname} ${color_yellow}\\D{%H:%M}${color_red}\$(my_jobs)${color_yellow}\$(__docker_ps1)\$(__git_ps1) ${color_reset}\w\n>> "
+    PS1="\${debian_chroot:+(\$debian_chroot)}${color_cyan}\u${color_red}@${color_cyan}${my_hostname} ${color_yellow}\\D{%H:%M}${color_red}\$(my_jobs)${color_yellow}\$(__docker_ps1)\$(__git_ps1) ${color_reset}\w\n>> "
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h \\D{%H:%M}\$(my_jobs)\$(__git_ps1) \w\n>> '
 fi
@@ -148,7 +152,7 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 if [ `uname -s` = Darwin ]; then
-	alias ls='ls -Gp'
+    alias ls='ls -Gp'
 fi
 
 # some more ls aliases
@@ -200,9 +204,9 @@ export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
 
 
 if [ "$OS_TYPE" = Darwin ]; then
-	export JAVA_HOME=`/usr/libexec/java_home`
+    export JAVA_HOME=`/usr/libexec/java_home`
 else 
-	export JAVA_HOME=/usr/lib/jvm/java-8-oracle/
+    export JAVA_HOME=/usr/lib/jvm/java-8-oracle/
 fi
 
 export IDEA_JDK=$JAVA_HOME
