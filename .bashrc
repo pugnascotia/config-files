@@ -99,11 +99,12 @@ my_hostname=$(hostname -s)
 
 if [[ "$my_hostname" == "rory-laptop" ]]; then
     my_hostname="laptop"
+elif [[ "$my_hostname" == "Lucys-MacBook-Pro.local" ]]; then
+    my_hostname="macbook-pro"
 fi
 
 my_jobs() {
-  count=$(echo $(jobs | wc -l))
-    count=$(jobs | wc -l)
+    count=$(jobs -s | perl -e 'print scalar @{[<>]};')
     str=" $count"
     if [[ $count -eq 0 ]]; then
         str=""
