@@ -75,6 +75,12 @@ iab dts rory.hunter@blackpepper.co.uk <Esc>:r!date<CR>kJA
 map <S-Down> <Down>
 map <S-Up> <Up>
 
+" De-indent in command mode
+nnoremap <S-Tab> <<
+
+" De-indent in insert mode
+inoremap <S-Tab> <C-d>
+
 "--------------------------------------------------------------------------
 
 highlight CursorLine cterm=NONE ctermbg=DarkGrey
