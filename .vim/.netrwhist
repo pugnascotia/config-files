@@ -1,9 +1,0 @@
-let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =7
-let g:netrw_dirhist_1='/home/rory/git/wss/deploy/docker'
-let g:netrw_dirhist_2='/home/rory/git/wss/acc-tests/docker'
-let g:netrw_dirhist_3='/home/rory/git/piirus/test/acceptance'
-let g:netrw_dirhist_4='/home/rory/git/bp-docker-deployments/.git'
-let g:netrw_dirhist_5='/home/rory/tmp/jhipster-test/src/main/scss'
-let g:netrw_dirhist_6='/home/rory/git/wss/deploy/test-wss.blackpepper.co.uk'
-let g:netrw_dirhist_7='/home/rory/tmp/react-redux-universal-hot-example/node_modules/better-npm-run'

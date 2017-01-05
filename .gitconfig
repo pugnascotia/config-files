@@ -10,9 +10,11 @@
 	exec = "!exec "
 	root = !pwd
 	tags = tag
-	dif = diff
+
+  obliterate = push --no-verify --force
 
 	# Yes, yes, I know
+	dif = diff
 	pish = push
 	piush = push
 	puish = push

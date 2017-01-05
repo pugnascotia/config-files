@@ -104,7 +104,7 @@ elif [[ "$my_hostname" == "Lucys-MacBook-Pro.local" ]]; then
 fi
 
 my_jobs() {
-    count=$(jobs -s | perl -e 'print scalar @{[<>]};')
+    count=$(echo $(jobs | wc -l))
     str=" $count"
     if [[ $count -eq 0 ]]; then
         str=""
@@ -113,14 +113,9 @@ my_jobs() {
 }
 
 __docker_ps1() {
-    if [[ "$DOCKER_HOST" != "" ]]; then
-        if [[ "$(which lolcat)" == "" ]]; then
-            color_red='\e[0;31m'
-            echo -e " ${color_red}⚡" | lolcat
-        else
-            echo " ⚡" | lolcat -f
-        fi
-    fi
+	if [[ "$DOCKER_HOST" != "" ]]; then
+        echo " ⚡"
+	fi
 }
 
 if [ "$color_prompt" = yes ]; then
@@ -183,8 +178,14 @@ fi
 export IDEA_JDK=$JAVA_HOME
 
 export PATH="$HOME/bin:$HOME/npm/bin:$JAVA_HOME/bin:/opt/node/bin:$PATH"
+if [ "$OS_TYPE" = "Darwin" ]; then
+    export PATH="$PATH:/usr/local/Cellar/node/7.2.0/bin"
+fi
 
 unset color_reset color_black color_red color_green color_yellow
 unset color_blue color_purple color_cyan color_white
 
 export GOPATH=$HOME
+
+export NVM_DIR="$HOME/.nvm"
+. "/usr/local/opt/nvm/nvm.sh"
