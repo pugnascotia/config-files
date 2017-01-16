@@ -17,3 +17,11 @@ if [ "$OS_TYPE" = Darwin ]; then
         fi
     }
 fi
+
+lint() {
+    if [ -e package.json ]; then
+        npm run lint
+    else
+        lint
+    fi
+}

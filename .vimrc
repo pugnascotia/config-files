@@ -92,6 +92,8 @@ highlight DiffText ctermbg=yellow ctermfg=black cterm=NONE
 
 highlight Folded ctermbg=red ctermfg=black cterm=NONE
 
+"-------------------------------------------------------------------------------
+
 autocmd BufNewFile,BufRead *Vagrantfile* set ft=ruby
 
 autocmd BufNewFile,BufRead hosts.* set ft=ini
@@ -106,3 +108,6 @@ autocmd BufNewFile,BufEnter,BufRead .eslintrc setf javascript
 autocmd BufNewFile,BufEnter,BufRead *.json setf javascript
 
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
+
+" Lint shell scripts
+autocmd BufWritePost *.sh :! shellcheck -x %
