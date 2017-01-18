@@ -1,9 +1,10 @@
 #!/bin/bash
 
-OS_TYPE=`uname -s`
+OS_TYPE=$(uname -s)
 
 digoc() {
-    ssh -i ~/.ssh/digitalocean root@$1
+    # shellcheck disable=SC2029
+    ssh -i ~/.ssh/digitalocean "root@$1"
 }
 
 if [ "$OS_TYPE" = Darwin ]; then
@@ -16,6 +17,12 @@ if [ "$OS_TYPE" = Darwin ]; then
             /usr/bin/find "$@"
         fi
     }
+
+    # Pruned ps
+    pps() {
+        # shellcheck disable=SC2009
+        ps | grep -v iTerm | cut -c-$COLUMNS
+    }
 fi
 
 lint() {
@@ -25,3 +32,13 @@ lint() {
         lint
     fi
 }
+
+yarn-link() {
+  local packages
+  packages=$(jq -r '.dependencies | to_entries | .[] | select(.value | startswith("file:")) | .key' package.json)
+
+  for pkg in $packages; do
+    yarn link "$pkg"
+  done
+}
+
