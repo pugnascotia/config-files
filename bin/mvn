@@ -1,0 +1,215 @@
+#!/usr/bin/perl -w
+# vim: tw=75 et ts=4 sw=4 sts=4 fo=croql:
+
+# rory.hunter@blackpepper.co.uk Mon Jun  9 15:40:40 BST 2014
+# Maven, with colours!
+#
+# You should edit this script to set the correct location of the maven
+# executables.
+
+# FIXME this doesn't work very well with interactive input.
+
+use strict;
+use warnings;
+
+use File::Basename qw( basename );
+use List::Util qw( first );
+use Term::ANSIColor qw( :constants :constants256 );
+
+# The directory containing the mvn or mvnDebug executables that we will wrap
+my $mvn_dir = '/usr/local/bin';
+
+# *cough* global variable
+my $line;
+
+main();
+
+#-------------------------------------------------------------------------------
+
+sub format_line {
+    format_level();
+    format_level_with_timestamp();
+    format_banner();
+    format_test_summary();
+    format_build_outcome();
+    format_plugin_info();
+    format_stacktrace();
+    format_exceptions();
+    format_spring_startup();
+
+    print $line;
+
+    # Always reset
+    print RESET;
+}
+
+#-------------------------------------------------------------------------------
+
+sub main {
+
+    unless (-d $mvn_dir) {
+        die "Don't know where to find the maven executables. Have you set \$mvn_dir correctly?";
+    }
+
+    my $exe = basename($0);
+
+    unless ( $exe eq 'mvn' or $exe eq 'mvnDebug' ) {
+        die "I must be invoked as mvn or mvnDebug";
+    }
+
+    my $color = 'auto';
+
+    my $color_arg_idx = first { $ARGV[$_] =~ m/^--color=/ } 0 .. ($#ARGV);
+
+    if (defined $color_arg_idx) {
+        (undef,$color) = split /=/, $ARGV[$color_arg_idx], 2;
+        # Remove the argument so that is it not passed to Maven
+        splice @ARGV, $color_arg_idx, 1;
+    }
+
+    ($color eq 'auto' or $color eq 'never' or $color = 'always')
+        or die "Usage: $exe [ --color[=auto|always|never] ] mvn_opts...\n";
+
+    my $real_mvn = $mvn_dir . '/' . $exe;
+
+    if ($color eq 'never' or ($color eq 'auto' and not -t STDOUT)) {
+        exec $real_mvn,, @ARGV;
+        die "Failed to exec: $!";
+    }
+
+    open MVN, "$mvn_dir/$exe " . join (" ", @ARGV) . " 2>&1 |"
+        or die "Failed to start mvn: $!";
+
+    while ($line = <MVN>) {
+        format_line();
+    }
+
+    close MVN;
+
+    # Propogate mvn's exit code
+    exit $? >> 8;
+}
+
+#-------------------------------------------------------------------------------
+
+sub format_level {
+    my ($level) = @_;
+
+    my %colors;
+    $colors{'WARN'} = YELLOW;
+    $colors{'WARNING'} = YELLOW;
+    $colors{'ERROR'} = RED;
+    $colors{'DEBUG'} = GREEN;
+    $colors{'INFO'} = CYAN;
+    $colors{'TRACE'} = MAGENTA;
+
+    my $regex = join '|', map { "\\s*$_\\s*" } keys %colors;
+
+    $line =~ s/^(\[($regex)\])/$colors{trim($2)} . $1 . RESET/e;
+}
+
+#-------------------------------------------------------------------------------
+
+sub format_level_with_timestamp {
+    my ($level) = @_;
+
+    my %colors;
+    $colors{'WARN'} = YELLOW;
+    $colors{'WARNING'} = YELLOW;
+    $colors{'ERROR'} = RED;
+    $colors{'FATAL'} = RED;
+    $colors{'DEBUG'} = GREEN;
+    $colors{'INFO'} = CYAN;
+    $colors{'TRACE'} = MAGENTA;
+
+    my $regex = join '|', keys %colors;
+
+    $line =~ s/^(\d{4}-\d\d-\d\d \d\d:\d\d:\d\d\.\d\d\d\s+)($regex)/GREEN . $1 . '  ' . $colors{trim($2)} . $2 . RESET/e;
+
+    $line =~ s/^(\d\d:\d\d:\d\d\.\d\d\d) (\s+) (\[ [^\]]+ \]) (\s+) ($regex)/GREEN . $1 . $2 . GREY14 . $3 . $4 . $colors{$5} . $5 . RESET/ex;
+}
+
+#-------------------------------------------------------------------------------
+
+sub format_banner {
+
+    $line =~ s/(-{50,})$/BOLD . GREEN . $1 . RESET/e;
+    $line =~ s/(T E S T S)/BOLD . GREEN . $1 . RESET/e;
+}
+
+#-------------------------------------------------------------------------------
+
+sub format_test_summary {
+    $line =~ s/Tests run: ([^,]*), Failures: ([^,]*), Errors: ([^,]*), Skipped: ([^,]*)/
+        BOLD . GREEN . "Tests run: " . $1 . RESET .
+        ", Failures: " . BOLD . RED . $2 . RESET .
+        ", Errors: " . BOLD . RED . $3 . RESET .
+        ", Skipped: " . BOLD . YELLOW . $4 . RESET/ge;
+
+    # Not all test result lines have this, so perform it separately
+    $line =~ s/Time elapsed: ([\d.]+)/"Time elapsed: " . BOLD . CYAN . $1 . RESET/e;
+}
+
+#-------------------------------------------------------------------------------
+
+sub format_build_outcome {
+    $line =~ s/BUILD SUCCESS/BOLD . GREEN . 'BUILD SUCCESS' . RESET/e;
+    $line =~ s/BUILD FAILURE/BOLD . RED . 'BUILD FAILURE' . RESET/e;
+
+    $line =~ s/(SUCCESS \[[^]]+\])$/BOLD . GREEN . $1 . RESET/e;
+    $line =~ s/(FAILURE \[[^]]+\])$/BOLD . RED . $1 . RESET/e;
+    $line =~ s/(SKIPPED)$/BOLD . YELLOW . $1 . RESET/e;
+
+    $line =~ s/Total time: ([\d.:]+\s*\w+)/"Total time: " . CYAN . $1 . RESET/e;
+}
+
+#-------------------------------------------------------------------------------
+
+sub format_plugin_info {
+    $line =~ s/(--- .*? ---)$/CYAN . $1 . RESET/e;
+}
+
+#-------------------------------------------------------------------------------
+
+sub format_stacktrace {
+    $line =~ s/ ^ (\tat\s) ( (?:[\w\$]+\.)+ )+ (<?[\w\$]+>?) \( (\w+) \.java: (\d+) \) /
+        BOLD . RED . $1 .
+        RESET . $2 .
+        GREEN . $3 .
+        RESET . '(' .
+        RED . $4 .
+        RESET . '.java:' .
+        CYAN . $5 .
+        RESET . ')'
+    /ex;
+
+    $line =~ s/^(\tat )((?:[\w\$]+\.))+(<?[\w\$]+>?)\((<generated>|Native Method)\)/
+        BOLD . RED . $1 .
+        RESET . $2 .
+        GREEN . $3 . '(' .
+        RED . $4 .
+        '($5)' .
+        RESET
+    /e;
+}
+
+#-------------------------------------------------------------------------------
+
+sub format_exceptions {
+    $line =~ s/(\w+?Exception)\b/BOLD RED . $1 . RESET/ge;
+}
+
+#-------------------------------------------------------------------------------
+
+sub format_spring_startup {
+    $line =~ s/(Started \w+ in )([\d.]+)( seconds \(JVM running for )([\d.]+)(\))/GREEN . $1 . RED . $2 . GREEN . $3 . RED . $4 . GREEN . $5 . RESET/e;
+}
+
+#-------------------------------------------------------------------------------
+
+sub trim {
+    my $value = shift;
+    $value =~ s/^\s+//;
+    $value =~ s/\s+$//;
+    return $value;
+}
