@@ -1,0 +1,35 @@
+#!/bin/bash
+
+generate_ssh_config() {
+  local include network pattern
+  network=$(networksetup -getairportnetwork en0 | awk '{print $NF}')
+
+  for file in $HOME/.ssh/config.d/*; do
+    include=0
+    if grep -q MATCH "$file"; then
+      pattern=$(grep MATCH "$file" | awk '{print $NF}')
+      if echo "$network" | grep -q "$pattern"; then
+        include=1
+      fi
+    else
+      include=1
+    fi
+
+    if [ $include -eq 1 ]; then
+      echo "# ---------- $(basename "$file") ----------"
+      echo
+      cat "$file"
+      echo
+    fi
+  done
+}
+
+main() {
+  local config
+  config="$HOME/.ssh/config"
+
+  mv "$config" "$config.bak"
+  generate_ssh_config > "$config"
+}
+
+main "$@"
