@@ -11,14 +11,20 @@
 	root = !pwd
 	tags = tag
 
-  obliterate = push --no-verify --force
+	obliterate = push --no-verify --force
+	oops = commit --amend --no-edit
+	unstage = rm --cached
 
 	# Yes, yes, I know
+	ad = add
 	dif = diff
 	pish = push
 	piush = push
 	puish = push
+	grpe = grep
+	shwo = show
+	comit = commit
 [push]
 	default = simple
 [core]
-	excludesfile = /home/rory/.gitignore
+	excludesfile = ~/.gitignore

@@ -108,6 +108,3 @@ autocmd BufNewFile,BufEnter,BufRead .eslintrc setf javascript
 autocmd BufNewFile,BufEnter,BufRead *.json setf javascript
 
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
-
-" Lint shell scripts
-autocmd BufWritePost *.sh :! shellcheck -x %

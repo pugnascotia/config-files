@@ -21,15 +21,15 @@ if [ "$OS_TYPE" = Darwin ]; then
     # Pruned ps
     pps() {
         # shellcheck disable=SC2009
-        ps | grep -v iTerm | cut -c-$COLUMNS
+        ps | grep -v iTerm | grep -v bash | cut -c-$COLUMNS
     }
 fi
 
 lint() {
     if [ -e package.json ]; then
-        npm run lint
+        npm run lint "$@"
     else
-        lint
+        lint "$@"
     fi
 }
 
@@ -42,3 +42,6 @@ yarn-link() {
   done
 }
 
+deugly() {
+  prettier "$@" | vim -c "setf javascript" -
+}
