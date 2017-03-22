@@ -105,6 +105,7 @@ autocmd BufNewFile,BufRead * if match(getline(1),"node") >= 0 | set filetype=jav
 autocmd BufNewFile,BufEnter,BufRead Dockerfile* setf dockerfile
 
 autocmd BufNewFile,BufEnter,BufRead .eslintrc setf javascript
+autocmd BufNewFile,BufEnter,BufRead .babelrc setf javascript
 autocmd BufNewFile,BufEnter,BufRead *.json setf javascript
 
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown

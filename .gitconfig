@@ -10,6 +10,7 @@
 	exec = "!exec "
 	root = !pwd
 	tags = tag
+	edit = !vim $(git ls-files | grep "$@")
 
 	obliterate = push --no-verify --force
 	oops = commit --amend --no-edit

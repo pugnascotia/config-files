@@ -38,7 +38,7 @@ HISTFILESIZE=2000
 HISTIGNORE=fg:bg:vim:ls
 
 # Ignore some entries when tab completing
-FIGNORE="$FIGNORE:DS_Store"
+FIGNORE="$FIGNORE:.DS_Store"
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -104,12 +104,11 @@ elif [[ "$my_hostname" == "Lucys-MacBook-Pro.local" ]]; then
 fi
 
 my_jobs() {
+    # Extra echo trims whitespace
     count=$(echo $(jobs | wc -l))
-    str=" $count"
-    if [[ $count -eq 0 ]]; then
-        str=""
+    if [[ $count -gt 0 ]]; then
+        echo " $count"
     fi
-    echo "$str"
 }
 
 __docker_ps1() {
@@ -178,8 +177,13 @@ fi
 export IDEA_JDK=$JAVA_HOME
 
 export PATH="$HOME/bin:$HOME/npm/bin:$JAVA_HOME/bin:/opt/node/bin:$PATH"
+
 if [ "$OS_TYPE" = "Darwin" ]; then
-    export PATH="$PATH:/usr/local/Cellar/node/7.2.0/bin"
+    for VERSION in /usr/local/Cellar/node/*; do
+        if ls $VERSION/bin | grep -v '^node$' | wc -l | awk '$1 == 0 {exit 1}'; then
+            export PATH="$PATH:$VERSION/bin"
+        fi
+    done
 fi
 
 unset color_reset color_black color_red color_green color_yellow
