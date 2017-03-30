@@ -15,6 +15,7 @@ git clone https://github.com/mxw/vim-jsx.git
 git clone https://github.com/pangloss/vim-javascript.git
 git clone https://github.com/pearofducks/ansible-vim
 git clone https://github.com/tpope/vim-fugitive.git
+git clone https://github.com/derekwyatt/vim-scala.git
 
 curl -s -o nginx.tar.gz http://hg.nginx.org/nginx/archive/tip.tar.gz/contrib/vim/
 mkdir nginx
