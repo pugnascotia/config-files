@@ -1,0 +1,85 @@
+#!/usr/bin/perl -w
+# vim:ts=2 sw=2 sts=2 et:
+
+use Term::ANSIColor qw( :constants :constants256 );
+
+main();
+
+sub main {
+  my @lines = qx(git status);
+
+  foreach my $line (@lines) {
+    print processLine($line);
+  }
+}
+
+sub processLine {
+  my ($line) = @_;
+
+  if ($line =~ s/^\t(modified:\s+(?:package\.json|yarn\.lock))/     ⚠️  $1/) {
+      return RED . $line . RESET;
+  }
+
+  if ($line =~ /^On branch (.+$)/) {
+    return 'On branch ' . MAGENTA . $1 . RESET . "\n";
+  }
+
+  if ($line =~ s/^\tboth modified:/     🔥  both modified:/) {
+    my $modified = RED . $line . RESET;
+    $modified =~ s/(\w+\.stories\.js)/MAGENTA . $1 . RESET/e;
+    return $modified;
+  }
+
+  if ($line =~ s/^\tdeleted:/     ❌  deleted:/) {
+    my $modified = RED . $line . RESET;
+    $modified =~ s/(\w+\.stories\.js)/MAGENTA . $1 . RESET/e;
+    return $modified;
+  }
+
+  if ($line =~ s/^\tnew file:/     ✅  new file:/) {
+    my $modified = GREEN . $line . RESET;
+    $modified =~ s/(__(?:tests|snapshots)__.*)/CYAN . $1 . RESET/e;
+    $modified =~ s/(\w+\.stories\.js)/MAGENTA . $1 . RESET/e;
+    return $modified;
+  }
+
+  if ($line =~ m/^\tmodified:/) {
+    my $modified = YELLOW . $line . RESET;
+    $modified =~ s/(__(?:tests|snapshots)__.*)/GREEN . $1 . RESET/e;
+    $modified =~ s/(\w+\.stories\.js)/MAGENTA . $1 . RESET/e;
+    return $modified;
+  }
+
+  if ($line =~ m/Changes to be committed/) {
+      return GREEN . $line . RESET;
+  }
+
+  if ($line =~ m/Changes not staged for commit/) {
+      return YELLOW . $line . RESET;
+  }
+
+  if ($line =~ m/^\trenamed:/) {
+    my $modified = CYAN . $line . RESET;
+    $modified =~ s/(__(?:tests|snapshots)__.*?\b)/GREEN . $1 . CYAN/ge;
+    $modified =~ s/(\w+\.stories\.js)/MAGENTA . $1 . CYAN/ge;
+    return $modified;
+  }
+
+  if ($line =~ s/^\tcopied:/     🌈  copied:/) {
+    my $modified = CYAN . $line . RESET;
+    $modified =~ s/(__(?:tests|snapshots)__.*?\b)/GREEN . $1 . CYAN/ge;
+    $modified =~ s/(\w+\.stories\.js)/MAGENTA . $1 . CYAN/ge;
+    return $modified;
+  }
+
+  if ($line =~ m/^Untracked files:$/) {
+    return RED . $line . RESET;
+  }
+
+  if ($line =~ s/(flow-typed\/.*)\b/CYAN . $1 . RESET/e) {
+    return $line;
+  }
+
+  return $line;
+}
+
