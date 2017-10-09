@@ -50,7 +50,7 @@ refresh-env() {
     make show-credentials
     local newPassword
     newPassword="$( make show-credentials | awk '/Root password/ { print $NF }' )"
-    sed -i.bak -e "s/ECE_PASSWORD=.*/E2E_PASSWORD=${newPassword}/" ../../../cloud-ui/.env
+    sed -i.bak -e "s/E2E_PASSWORD=.*/E2E_PASSWORD=${newPassword}/" ../../../cloud-ui/.env
     osascript -e 'display notification "update-environment finished" with title "make"'
   else
     osascript -e 'display notification "update-environment failed!" with title "make"'
