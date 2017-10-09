@@ -2,14 +2,9 @@
 
 OS_TYPE=$(uname -s)
 
-digoc() {
-    # shellcheck disable=SC2029
-    ssh -i ~/.ssh/digitalocean "root@$1"
-}
-
 if [ "$OS_TYPE" = Darwin ]; then
     find() {
-        if [[ "$@" == "" ]]; then
+        if [[ "$*" == "" ]]; then
             /usr/bin/find .
         elif [[ "${1:0:1}" == "-" ]]; then
             /usr/bin/find . "$@"
@@ -22,6 +17,10 @@ if [ "$OS_TYPE" = Darwin ]; then
     pps() {
         # shellcheck disable=SC2009
         ps | grep -v iTerm | grep -v bash | cut -c-$COLUMNS
+    }
+
+    copy-pass() {
+        grep PASS .env | cut -f2 -d= | pbcopy
     }
 fi
 
@@ -44,4 +43,24 @@ yarn-link() {
 
 deugly() {
   prettier "$@" | vim -c "setf javascript" -
+}
+
+refresh-env() {
+  if make update-environment; then
+    make show-credentials
+    local newPassword
+    newPassword="$( make show-credentials | awk '/Root password/ { print $NF }' )"
+    sed -i.bak -e "s/ECE_PASSWORD=.*/E2E_PASSWORD=${newPassword}/" ../../../cloud-ui/.env
+    osascript -e 'display notification "update-environment finished" with title "make"'
+  else
+    osascript -e 'display notification "update-environment failed!" with title "make"'
+  fi
+}
+
+tint() {
+  if jq -e .scripts.flow package.json &>/dev/null; then
+    yarn lint && yarn flow && yarn test
+  else
+    yarn lint && yarn test
+  fi
 }
