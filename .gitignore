@@ -2,3 +2,9 @@
 *~
 *.swp
 .vim/.netrwhist
+.DS_Store
+yarn-error.log
+*.rej
+*.orig
+*.bak
+tags

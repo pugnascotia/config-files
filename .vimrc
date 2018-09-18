@@ -50,6 +50,8 @@ highlight Statement ctermfg=yellow
 
 highlight Search ctermfg=black
 
+highlight SpellBad ctermfg=black
+
 " Add 'r' to insert the comment leader when hitting <Enter> in a comment, and
 " 'l' to avoid breaking lines that were already longer than 'textwidth'.
 set formatoptions=crql
@@ -64,10 +66,18 @@ cab W w
 cab Set set
 
 " Shortcut to insert a timestamp
-iab dts rory.hunter@blackpepper.co.uk <Esc>:r!date<CR>kJA
+iab dts rory@elastic.co <Esc>:r!date<CR>kJA
 
 " Highlight current line
 " set cursorline
+
+set backupdir=~/.vim/tmp,~/tmp,.
+
+" Make backspace work like other programs
+set backspace=indent,eol,start
+
+" Show line numbers
+set number
 
 "--------------------------------------------------------------------------
 
@@ -92,6 +102,9 @@ highlight DiffText ctermbg=yellow ctermfg=black cterm=NONE
 
 highlight Folded ctermbg=red ctermfg=black cterm=NONE
 
+" For terminals in IntelliJ
+highlight Search ctermfg=17
+
 "-------------------------------------------------------------------------------
 
 autocmd BufNewFile,BufRead *Vagrantfile* set ft=ruby
@@ -106,6 +119,23 @@ autocmd BufNewFile,BufEnter,BufRead Dockerfile* setf dockerfile
 
 autocmd BufNewFile,BufEnter,BufRead .eslintrc setf javascript
 autocmd BufNewFile,BufEnter,BufRead .babelrc setf javascript
-autocmd BufNewFile,BufEnter,BufRead *.json setf javascript
 
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
+
+
+"------ Terraform formatting
+
+if !exists('g:formatdef_terraform')
+    let g:formatdef_terraform = '"terraform fmt -"'
+endif
+
+if !exists('g:formatters_terraform')
+    let g:formatters_terraform = ['terraform']
+endif
+
+au BufWrite *.tf :Autoformat
+
+
+"------- Spelling
+
+iabbrev CLoses Closes

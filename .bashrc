@@ -1,3 +1,4 @@
+#!/bin/bash
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -5,20 +6,15 @@
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
-      *) return;;
+    *) return;;
 esac
 
-OS_TYPE=`uname -s`
+OS_TYPE=$(uname -s)
 
 export EDITOR=vim
 export VISUAL=vim
 
 if [ "$OS_TYPE" = Darwin ]; then
-    if [ -r /Applications/Xcode.app/Contents/Developer/usr/share/git-core/git-prompt.sh ]; then
-        . /Applications/Xcode.app/Contents/Developer/usr/share/git-core/git-prompt.sh
-    fi
-
-    # Colourful "ls" please
     export CLICOLOR=1
 fi
 
@@ -81,31 +77,26 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 # https://wiki.archlinux.org/index.php/Color_Bash_Prompt
-# Reset
 color_reset='\e[0m'       # Text Reset
-
-# Regular Colors
-color_black='\e[0;30m'        # Black
-color_red='\e[0;31m'          # Red
-color_green='\e[0;32m'        # Green
-color_yellow='\e[0;33m'       # Yellow
-color_blue='\e[0;34m'         # Blue
-color_purple='\e[0;35m'       # Purple
-color_cyan='\e[0;36m'         # Cyan
-color_white='\e[0;37m'        # White
+color_red='\e[0;31m'      # Red
+color_yellow='\e[0;33m'   # Yellow
+color_cyan='\e[0;36m'     # Cyan
 
 
 my_hostname=$(hostname -s)
 
-if [[ "$my_hostname" == "rory-laptop" ]]; then
-    my_hostname="laptop"
-elif [[ "$my_hostname" == "Lucys-MacBook-Pro.local" ]]; then
-    my_hostname="macbook-pro"
-fi
+case "$my_hostname" in
+  rory-laptop) my_hostname="laptop" ;;
+
+  Lucys-MacBook-Pro.local) my_hostname="macbook-pro" ;;
+
+  Rorys-MBP) my_hostname="elastic" ;;
+  Rorys-MacBook-Pro) my_hostname="elastic" ;;
+esac
 
 my_jobs() {
     # Extra echo trims whitespace
-    count=$(echo $(jobs | wc -l))
+    count=$(jobs -s | wc -l | sed -e 's/ //g; s/^0$//')
     if [[ $count -gt 0 ]]; then
         echo " $count"
     fi
@@ -120,15 +111,16 @@ __docker_ps1() {
 if [ "$color_prompt" = yes ]; then
     PS1="\${debian_chroot:+(\$debian_chroot)}${color_cyan}\u${color_red}@${color_cyan}${my_hostname} ${color_yellow}\\D{%H:%M}${color_red}\$(my_jobs)${color_yellow}\$(__docker_ps1)\$(__git_ps1) ${color_reset}\w\n>> "
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h \\D{%H:%M}\$(my_jobs)\$(__git_ps1) \w\n>> '
+    PS1='${debian_chroot:+($debian_chroot)}\u@${my_hostname} \\D{%H:%M}\$(my_jobs)\$(__git_ps1) \w\n>> '
 fi
 
 unset color_prompt force_color_prompt my_hostname
+unset color_reset color_red color_yellow color_cyan
 
 # If this is an xterm set the title to user@host dir
 case "$TERM" in
 xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h\$(__git_ps1) \w\a\]$PS1"
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@${my_hostname}\$(__git_ps1) \w\a\]$PS1"
     ;;
 *)
     ;;
@@ -153,7 +145,7 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# vi mode: I like pain
+
 set -o vi
 
 
@@ -169,27 +161,34 @@ export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
 
 
 if [ "$OS_TYPE" = "Darwin" ]; then
-    export JAVA_HOME=`/usr/libexec/java_home`
+    export JAVA_HOME=$(/usr/libexec/java_home)
 else 
     export JAVA_HOME="/usr/lib/jvm/java-8-oracle/"
 fi
 
 export IDEA_JDK=$JAVA_HOME
 
-export PATH="$HOME/bin:$HOME/npm/bin:$JAVA_HOME/bin:/opt/node/bin:$PATH"
+export PATH="$HOME/bin:$HOME/npm/bin:$JAVA_HOME/bin:/opt/node/bin:/usr/local/sbin:$HOME/.cargo/bin:$PATH"
 
 if [ "$OS_TYPE" = "Darwin" ]; then
     for VERSION in /usr/local/Cellar/node/*; do
-        if ls $VERSION/bin | grep -v '^node$' | wc -l | awk '$1 == 0 {exit 1}'; then
+        if [[ -e "$VERSION/bin/node" ]]; then
             export PATH="$PATH:$VERSION/bin"
         fi
     done
 fi
 
-unset color_reset color_black color_red color_green color_yellow
-unset color_blue color_purple color_cyan color_white
+unset color_reset color_red color_yellow
+unset color_cyan 
 
 export GOPATH=$HOME
 
 export NVM_DIR="$HOME/.nvm"
-. "/usr/local/opt/nvm/nvm.sh"
+[ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh" # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+eval "$(thefuck --alias)"
+
+if [ -f /usr/local/var/ecl.auto ]; then
+  source /usr/local/var/ecl.auto
+fi

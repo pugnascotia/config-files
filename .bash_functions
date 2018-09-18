@@ -46,6 +46,8 @@ deugly() {
 }
 
 refresh-env() {
+  aws-mfa
+
   if make update-environment; then
     make show-credentials
     local newPassword
@@ -58,9 +60,11 @@ refresh-env() {
 }
 
 tint() {
-  if jq -e .scripts.flow package.json &>/dev/null; then
-    yarn lint && yarn flow && yarn test
-  else
-    yarn lint && yarn test
-  fi
+  yarn flow && yarn lint-eslint --fix && yarn test
 }
+
+if [ -x "$HOME/bin/git-wrapper" ]; then
+  git() {
+    git-wrapper "$@"
+  }
+fi

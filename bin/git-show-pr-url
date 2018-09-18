@@ -1,0 +1,38 @@
+#!/usr/bin/perl -w
+
+use strict;
+use warnings;
+
+my $upstream = get_repo('upstream');
+my $origin = (split /\//, get_repo('origin'))[0];
+my $branch = get_branch();
+
+if ($branch eq 'master') {
+    exit 0;
+}
+
+print <<EOF;
+
+ 🎉  Create a PR by opening https://github.com/$upstream/compare/master...$origin:$branch?expand=1
+
+EOF
+
+
+sub get_repo {
+    my ($name) = @_;
+
+    my $upstream = qx( git remote get-url $name 2>&1 );
+
+    exit 0 if $upstream =~ /^fatal:/;
+
+    my ($repo) = (split /:/, $upstream)[1];
+    $repo = (split /\./, $repo)[0];
+
+    return $repo;
+}
+
+sub get_branch {
+    my $name_rev = qx( git rev-parse --abbrev-ref HEAD );
+    chomp $name_rev;
+    return $name_rev;
+}

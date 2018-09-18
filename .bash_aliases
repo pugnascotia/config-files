@@ -2,8 +2,9 @@
 
 # Alias definitions.
 
-if [ `uname -s` = "Darwin" ]; then
-    alias ls='ls -Gp'
+if [ "$OS_TYPE" = "Darwin" ]; then
+  alias ls='ls -Gp'
+  alias siri="open /Applications/Siri.app"
 fi
 
 alias sl=ls
@@ -30,17 +31,19 @@ alias jjs='rlwrap jjs'
 
 alias fig=docker-compose
 
-if [ `uname -s` = "Linux" ]; then
+if [ "$OS_TYPE" = "Linux" ]; then
   # enable color support of ls and also add handy aliases
   if [ -x /usr/bin/dircolors ]; then
-      test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-      alias ls='ls --color=auto'
-      #alias dir='dir --color=auto'
-      #alias vdir='vdir --color=auto'
+    if test -r ~/.dircolors; then
+      eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    fi
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
 
-      alias grep='grep --color=auto'
-      alias fgrep='fgrep --color=auto'
-      alias egrep='egrep --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
   fi
 
   # Add an "alert" alias for long running commands.  Use like so:
@@ -50,3 +53,13 @@ fi
 
 alias yanr=yarn
 alias yarm=yarn
+
+# Time management
+alias SLEEP="timew stop && timew week && pmset sleepnow"
+alias CONTINUE="timew continue && timew week"
+alias COn="timew continue && timew week"
+
+# Rebuild JavaScript tags 
+alias jtags="ctags -R public server flow-typed scripts webpack && sed -i '' -E '/^(if|switch|function|module\.exports|it|describe).+language:js$/d' tags"
+
+alias t=timew

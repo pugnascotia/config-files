@@ -1,0 +1,27 @@
+#!/usr/bin/perl -w
+
+use strict;
+use warnings;
+
+if (1 <= scalar @ARGV) {
+    if ($ARGV[0] eq 'push') {
+        my $git_exe = qx( which git );
+        chomp $git_exe;
+
+        my $result = invoke();
+        if (0 == $result) {
+            exec 'git-show-pr-url';
+        } else {
+            exit $result;
+        }
+    }
+}
+
+exit invoke();
+
+sub invoke {
+    my $git_exe = qx( which git );
+    chomp $git_exe;
+
+    return system $git_exe, @ARGV;
+}

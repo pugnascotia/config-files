@@ -5,16 +5,16 @@
 	ui = true
 [alias]
 	co = checkout
-	ls = log --graph -n 30 --decorate --pretty='format:%Cgreen%h %<(14)%Cred%an %C(auto)%d %Creset%s'
-	st = status
+	ls = !git log --color --graph -n 30 --decorate --pretty='format:%Cgreen%h %<(20)%Cred%an %C(auto)%d %Creset%s' "$@" | replace-emojis
 	exec = "!exec "
 	root = !pwd
 	tags = tag
 	edit = !vim $(git ls-files | grep "$@")
+  push = !git push && git-show-pr-url
 
 	obliterate = push --no-verify --force
 	oops = commit --amend --no-edit
-	unstage = rm --cached
+	unstage = reset
 
 	# Yes, yes, I know
 	ad = add
@@ -25,7 +25,10 @@
 	grpe = grep
 	shwo = show
 	comit = commit
+	brnach = branch
 [push]
 	default = simple
 [core]
 	excludesfile = ~/.gitignore
+[fetch]
+	prune = true

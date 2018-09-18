@@ -1,0 +1,329 @@
+#!/usr/bin/perl -w
+# vim:set et ts=4 sw=4 sts=4:
+
+# rory.hunter@blackpepper.co.uk Mon Jun 16 13:03:18 BST 2014
+# Run with --help or see the "usage" subroutine below for a description of what
+# this script does.
+#
+# When updating this script, if you change out of the current directory, make
+# sure you change back again when you're finished. Most subroutines assume that
+# they are executing from the starting directory.
+
+use strict;
+use warnings;
+
+use Cwd qw( abs_path );
+use File::Basename qw( basename );
+use File::Copy;
+use File::Spec;
+use Getopt::Long;
+use Term::ANSIColor qw( :constants );
+
+# Command-line options.
+my $bare = 0;
+my $branch = 'split';
+my $dest = undef;
+my $help = 0;
+my $prefix = undef;
+my $verbose = 0;
+
+# Declare some subroutine args.
+sub error($);
+sub git(@);
+sub notify($);
+sub trace($);
+sub usage();
+
+# Global - keep track of where we start.
+my $orig_dir = $ENV{PWD};
+
+main();
+
+#-------------------------------------------------------------------------------
+
+sub usage() {
+
+    my $Required = in_red('Required');
+
+    print STDERR <<EOF;
+
+Usage: $0 --prefix=SRC_DIR --dest=DEST_DIR
+
+From within a checked-out git repository, create a new git repository at
+DEST_DIR and populate it with commits that affect the location directory
+SRC_DIR.
+
+If a '.gitignore' file exists in the master repository, it will be copied
+to the new repository.
+
+Options:
+
+    --bare    Create bare repository. Default is create a regular repository.
+
+    --branch  Optional. Sets the branch name used when splitting out commits.
+              This cannot exist at the start, and will be deleted when the
+              process is finished. Default: "split"
+
+    --dest    $Required. Specifies the directory where the new bare git
+              repository should be created.
+
+    --help    Display this message.
+    -?
+
+    --prefix  $Required. Specifies the sub-directory in the current checkout
+              whose commits should be extracted.
+
+    --verbose Print extra progress information.
+
+EOF
+    exit 1;
+}
+
+#-------------------------------------------------------------------------------
+
+sub main {
+
+    check_env_and_process_options();
+
+    create_repository();
+
+    split_commits();
+
+    cleanup();
+
+    copy_gitignore();
+
+    print_post_message();
+
+    exit 0;
+}
+
+#-------------------------------------------------------------------------------
+
+sub check_env_and_process_options {
+    -d '.git' or error "Can't find a .git directory - are you in the right place?";
+
+    my $successful = GetOptions(
+        'bare'     => \$bare,
+        'branch:s' => \$branch,
+        'verbose'    => \$verbose,
+        'dest=s'   => \$dest,
+        'help|?'   => \$help,
+        'prefix=s' => \$prefix,
+    );
+
+    usage if $help or not $successful;
+
+    trace "Checking 'dest' parameter";
+
+    if (not defined $dest or 0 == length($dest)) {
+        usage;
+    }
+
+    if (-e $dest) {
+        error "$dest already exists.";
+    }
+
+    trace "Converting 'dest' to an absolute path";
+
+    # Cwd::abs_path() doesn't convert '~' like the shell does
+    $dest =~ s/~/$ENV{HOME}/g;
+
+    $dest = abs_path($dest);
+
+    trace "'dest' is now: $dest";
+
+    trace 'Checking "prefix" parameter';
+
+    if (not defined $prefix or 0 == length($prefix)) {
+        usage;
+    }
+
+    unless (-d $prefix) {
+        error "$prefix does not exist or is not a directory.";
+    }
+
+    # The POD page for Getopt::Long suggests that it will set this to the empty
+    # string if the user doesn't give it a value.
+    unless (defined $branch and 0 < length($branch)) {
+        trace "Using default branch name";
+        $branch = 'split';
+    }
+
+    trace "Checking whether branch '$branch' already exists";
+
+    if ( qx(git branch | grep "$branch") ) {
+        error "Branch '$branch' already exists. Usage another with --branch.";
+    }
+}
+
+#-------------------------------------------------------------------------------
+
+sub create_repository {
+    if ($bare) {
+        notify "Creating bare repository at '$dest'";
+    }
+    else {
+        notify "Creating repository at '$dest'";
+    }
+
+    trace "Creating directory";
+    mkdir $dest or error "Failed to create directory $dest: $!";
+
+    trace "Changing into directory";
+    chdir $dest or error "Failed to change into $dest: $!";
+
+    if ($bare) {
+        trace 'Initialising bare repository';
+        git 'init', '--bare'
+            or error "Failed to initialise bare git repository.";
+    }
+    else {
+        trace 'Initialising non-bare repository';
+        git 'init'
+            or error "Failed to initialise non-bare git repository.";
+
+        trace 'Setting receive.denyCurrentBranch to "ignore", allowing pushes to master';
+        git 'config', 'receive.denyCurrentBranch', 'ignore'
+            or error "Failed to set 'receive.denyCurrentBranch' config option.";
+    }
+
+    chdir $orig_dir;
+}
+
+#-------------------------------------------------------------------------------
+
+sub split_commits {
+    notify "Creating branch '$branch' with relevant commits (please be patient)";
+
+    git 'subtree', 'split', "--prefix=$prefix", '-b', $branch
+        or error "Failed to split out commits under $prefix. Check the output from git.";
+
+    notify "Pushing changes to new repository in 'master'";
+
+    git 'push', $dest, "$branch:master"
+        or error "Failed to push subtree commits to $dest.";
+}
+
+#-------------------------------------------------------------------------------
+
+sub cleanup {
+    notify  "Removing temporary branch '$branch'" ;
+
+    trace "Removing branch with -D instead of -d to remove it irrespective of merge status";
+    git 'branch', '-D', $branch
+        or error "Failed to delete branch '$branch'.";
+
+    unless ($bare) {
+        chdir $dest;
+
+        trace 'Unset receive.denyCurrentBranch to use the default value';
+        git 'config', '--unset', 'receive.denyCurrentBranch'
+            or error "Failed to remove 'receive.denyCurrentBranch' config option.";
+
+        trace 'Performing hard reset in new repository to checkout master';
+        git 'reset', '--hard'
+            or error 'Failed to perform hard reset in new repository';
+
+        chdir $orig_dir;
+    }
+}
+
+#-------------------------------------------------------------------------------
+
+sub trace($) {
+    if ($verbose) {
+        print STDERR GREEN if -t STDERR;
+        print STDERR '[trace] ', $_[0], "\n";
+        print STDERR RESET if -t STDERR;
+    }
+}
+
+#-------------------------------------------------------------------------------
+
+sub print_post_message {
+
+    notify "Finished copying commits to $dest";
+
+    my $new_repo_name = basename($dest);
+
+    my $git_dir = ($bare) ? $dest : File::Spec->catdir( $dest, '.git' );
+
+    print STDOUT <<EOF;
+
+You should now verify the new repository, for example you could run git-log or
+gitk and check the history:
+
+    GIT_DIR=$git_dir  git log
+    GIT_DIR=$git_dir  gitk
+
+Or:
+
+    cd $dest
+    git log
+    gitk
+
+When you're happy, you can clean up the current repository with:
+
+    cd $orig_dir
+    git rm -r $prefix
+    git commit -m "Moved $prefix to new repository $new_repo_name"
+
+EOF
+
+    if (not $bare and -e '.gitignore') {
+        print STDOUT BOLD, RED if -t STDOUT;
+        print STDOUT 'NOTE: ';
+        print STDOUT RESET if -t STDOUT;
+        print STDOUT <<EOF;
+.gitignore has been copied to the new repository. `git status` will report it as
+a new file.
+
+EOF
+    }
+}
+
+#-------------------------------------------------------------------------------
+
+sub notify($) {
+    print STDOUT BOLD, GREEN if -t STDOUT;
+    print STDOUT $_[0];
+    print STDOUT RESET if -t STDOUT;
+    print "\n";
+}
+
+#-------------------------------------------------------------------------------
+
+sub error($) {
+    print STDERR BOLD, RED if -t STDOUT;
+    print STDERR $_[0];
+    print STDERR RESET if -t STDOUT;
+    print "\n";
+    exit 1;
+}
+
+#-------------------------------------------------------------------------------
+
+sub git(@) {
+    trace  join ' ', 'git' , @_ ;
+    return 0 == system('git', @_);
+}
+
+#-------------------------------------------------------------------------------
+
+sub copy_gitignore {
+    if (not $bare and -e '.gitignore') {
+        trace "Copying $orig_dir/.gitignore to $dest/.gitignore";
+        copy('.gitignore', $dest);
+    }
+}
+
+#-------------------------------------------------------------------------------
+
+sub in_red {
+    my $word = shift;
+    if (-t STDERR) {
+        $word = BOLD . RED . $word . RESET;
+    }
+    return $word;
+}

@@ -5,6 +5,8 @@ use Term::ANSIColor qw( :constants :constants256 );
 
 main();
 
+my $untracked = 0;
+
 sub main {
   my @lines = qx(git status);
 
@@ -16,7 +18,7 @@ sub main {
 sub processLine {
   my ($line) = @_;
 
-  if ($line =~ s/^\t(modified:\s+(?:package\.json|yarn\.lock))/     ⚠️  $1/) {
+  if ($line =~ s/^\t(modified:\s+(?:package\.json|yarn\.lock|\.flowconfig))/     ⚠️  $1/) {
       return RED . $line . RESET;
   }
 
@@ -73,11 +75,18 @@ sub processLine {
   }
 
   if ($line =~ m/^Untracked files:$/) {
+    $untracked = 1;
     return RED . $line . RESET;
   }
 
   if ($line =~ s/(flow-typed\/.*)\b/CYAN . $1 . RESET/e) {
     return $line;
+  }
+
+  if ($untracked) {
+    if ($line =~ s/^\t(\w+\/.*)\b/'     ✨  ' . RED . $1 . RESET/e) {
+      return $line;
+    }
   }
 
   return $line;

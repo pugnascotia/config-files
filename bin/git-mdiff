@@ -1,0 +1,26 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+my @diff_opts;
+
+while (@ARGV and $ARGV[0] =~ m/^-/) {
+    push @diff_opts, shift @ARGV;
+}
+
+if (0 == scalar @ARGV) {
+  die "Usage: git-mdiff [diff opts] branch-or-commit\n";
+}
+
+my $common_ancester = qx(git merge-base master @ARGV);
+if ($?) {
+    exit 1;
+}
+chomp $common_ancester;
+
+my @git_diff = ('git', 'diff', @diff_opts, $common_ancester, @ARGV);
+
+exec @git_diff;
+
+die "Failed to exec: $!"
