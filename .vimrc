@@ -122,6 +122,7 @@ autocmd BufNewFile,BufEnter,BufRead .babelrc setf javascript
 
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 
+autocmd FileType javascript,markdown autocmd BufWritePre <buffer> %s/\s\+$//e
 
 "------ Terraform formatting
 
@@ -139,3 +140,4 @@ au BufWrite *.tf :Autoformat
 "------- Spelling
 
 iabbrev CLoses Closes
+iabbrev Javascript JavaScript

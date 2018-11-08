@@ -3,9 +3,6 @@ iab vat var
 
 set smartindent autoindent
 
-" Brace completion
-" imap <buffer> {{ {<CR>}<Esc>O
-
 let g:javascript_plugin_flow = 1
 
 let g:ale_fixers = {
