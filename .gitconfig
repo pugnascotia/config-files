@@ -5,27 +5,27 @@
 	ui = true
 [alias]
 	co = checkout
-	ls = !git log --color --graph -n 30 --decorate --pretty='format:%Cgreen%h %<(20)%Cred%an %C(auto)%d %Creset%s' "$@" | replace-emojis
-	exec = "!exec "
-	root = !pwd
-	tags = tag
 	edit = !vim $(git ls-files | grep "$@")
-  push = !git push && git-show-pr-url
-
+	exec = "!exec "
+	ls = !git log --color --graph -n 30 --decorate --pretty='format:%Cgreen%h %<(20)%Cred%an %C(auto)%d %Creset%s' "$@" | replace-emojis
 	obliterate = push --no-verify --force
 	oops = commit --amend --no-edit
+	root = !pwd
+	tags = tag
 	unstage = reset
+  history = log -p -M --follow --stat -- 
+  push = !git push && git-show-pr-url
 
-	# Yes, yes, I know
+	# Typos. Yes, yes, I know
 	ad = add
+	brnach = branch
+	comit = commit
 	dif = diff
+	grpe = grep
 	pish = push
 	piush = push
 	puish = push
-	grpe = grep
 	shwo = show
-	comit = commit
-	brnach = branch
 [push]
 	default = simple
 [core]

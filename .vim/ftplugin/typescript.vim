@@ -4,7 +4,7 @@ iab vat var
 set smartindent autoindent
 
 let g:ale_fixers = {
-\   'javascript': ['eslint'],
+\   'typescript': ['eslint'],
 \}
 
 let g:ale_sign_column_always = 1

@@ -59,7 +59,7 @@ set formatoptions=crql
 " Allow '~' (flip character case) to be used with movement operators.
 set tildeop
 
-set suffixesadd=.java,.js
+set suffixesadd=.java,.js,.d.ts
 
 " Fix speling
 cab W w
@@ -141,3 +141,7 @@ au BufWrite *.tf :Autoformat
 
 iabbrev CLoses Closes
 iabbrev Javascript JavaScript
+
+
+"------- ALE config
+let g:ale_fix_on_save = 1
