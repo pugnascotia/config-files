@@ -19,6 +19,7 @@ git clone https://github.com/tpope/vim-fugitive.git
 git clone https://github.com/reasonml-editor/vim-reason-plus
 git clone https://github.com/w0rp/ale.git
 git clone https://github.com/leafgarland/typescript-vim.git
+git clone https://github.com/vim-airline/vim-airline
 
 curl -s -o nginx.tar.gz http://hg.nginx.org/nginx/archive/tip.tar.gz/contrib/vim/
 mkdir nginx
