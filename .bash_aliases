@@ -23,11 +23,11 @@ alias gut=git
 alias fit=git
 alias gti=git
 
+alias yanr=yarn
+alias yarm=yarn
+
 # evim == easy vim. BURN IN HELL YOU MONSTER
 alias evim=vim
-
-# Make jjs actually usable
-alias jjs='rlwrap jjs'
 
 alias fig=docker-compose
 
@@ -38,9 +38,6 @@ if [ "$OS_TYPE" = "Linux" ]; then
       eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     fi
     alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
-
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
@@ -51,15 +48,11 @@ if [ "$OS_TYPE" = "Linux" ]; then
   alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 fi
 
-alias yanr=yarn
-alias yarm=yarn
-
-# Time management
-alias SLEEP="timew stop && timew week && pmset sleepnow"
-alias CONTINUE="timew continue && timew week"
-alias COn="timew continue && timew week"
-
-# Rebuild JavaScript tags 
-alias jtags="ctags -R public server flow-typed scripts webpack && sed -i '' -E '/^(if|switch|function|module\.exports|it|describe).+language:js$/d' tags"
-
-alias t=timew
+if [ -x /usr/local/bin/timew ]; then
+  # Time management
+  alias SLEEP="timew stop && timew week && pmset sleepnow"
+  alias SLEEPNOW="pmset sleepnow"
+  alias CONTINUE="timew continue && timew week"
+  alias COn="timew continue && timew week"
+  alias t=timew
+fi

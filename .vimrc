@@ -9,6 +9,7 @@ call pathogen#helptags()
 
 " Respect modelines, please
 set modeline
+set modelines=2
 
 " Visually display searches
 set hlsearch
@@ -119,6 +120,7 @@ autocmd BufNewFile,BufEnter,BufRead Dockerfile* setf dockerfile
 
 autocmd BufNewFile,BufEnter,BufRead .eslintrc setf javascript
 autocmd BufNewFile,BufEnter,BufRead .babelrc setf javascript
+autocmd BufNewFile,BufEnter,BufRead tsconfig.json setf javascript
 
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 
@@ -145,3 +147,7 @@ iabbrev Javascript JavaScript
 
 "------- ALE config
 let g:ale_fix_on_save = 1
+
+"------- Add a shortcut for the Commentary plugin
+noremap <leader>/ :Commentary<cr>
+

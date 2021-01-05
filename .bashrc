@@ -91,7 +91,9 @@ case "$my_hostname" in
   Lucys-MacBook-Pro.local) my_hostname="macbook-pro" ;;
 
   Rorys-MBP) my_hostname="elastic" ;;
+  Rorys-MBP-2) my_hostname="elastic" ;;
   Rorys-MacBook-Pro) my_hostname="elastic" ;;
+  MacBook-Pro) my_hostname="elastic" ;;
 esac
 
 my_jobs() {
@@ -162,6 +164,13 @@ export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
 
 if [ "$OS_TYPE" = "Darwin" ]; then
     export JAVA_HOME=$(/usr/libexec/java_home)
+    export RUNTIME_JAVA_HOME=$(/usr/libexec/java_home -v 11)
+
+    export JAVA14_HOME=$(/usr/libexec/java_home -v 14)
+    export JAVA13_HOME=$(/usr/libexec/java_home -v 13)
+    export JAVA12_HOME=$(/usr/libexec/java_home -v 12)
+    export JAVA11_HOME=$(/usr/libexec/java_home -v 11)
+    export JAVA8_HOME=$(/usr/libexec/java_home -v 1.8)
 else 
     export JAVA_HOME="/usr/lib/jvm/java-8-oracle/"
 fi

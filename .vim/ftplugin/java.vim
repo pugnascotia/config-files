@@ -5,3 +5,5 @@ set smartindent
 
 " Brace completion
 imap <buffer> { {<CR>}<Esc>O
+
+let b:ale_linters = []

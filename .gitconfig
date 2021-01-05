@@ -4,21 +4,25 @@
 [color]
 	ui = true
 [alias]
+	cleanup-branches = !git remote prune origin && git branch -vvv | sed -e 's/^[*+ ]*//' | awk '/: gone]/ { print $1 }' | xargs -p git branch -D
 	co = checkout
 	edit = !vim $(git ls-files | grep "$@")
 	exec = "!exec "
-	ls = !git log --color --graph -n 30 --decorate --pretty='format:%Cgreen%h %<(20)%Cred%an %C(auto)%d %Creset%s' "$@" | replace-emojis
+	history = log -p -M --follow --stat --
+	ls = !git log --color --graph -n 30 --decorate --pretty='format:%Cgreen%h %<(20)%Cred%an %C(auto)%d %Creset%s' $@ | replace-emojis
 	obliterate = push --no-verify --force
 	oops = commit --amend --no-edit
+	push = !git push && git-show-pr-url
+	refresh-branch = !git fetch upstream && git reset --hard upstream/$(git rev-parse --abbrev-ref HEAD)
 	root = !pwd
 	tags = tag
 	unstage = reset
-  history = log -p -M --follow --stat -- 
-  push = !git push && git-show-pr-url
 
 	# Typos. Yes, yes, I know
 	ad = add
 	brnach = branch
+	bracnh = branch
+	rbanch = branch
 	comit = commit
 	dif = diff
 	grpe = grep
@@ -30,5 +34,13 @@
 	default = simple
 [core]
 	excludesfile = ~/.gitignore
+	pager = delta
 [fetch]
 	prune = true
+[delta]
+	plus-color = "#012800"
+	minus-color = "#340001"
+	syntax-theme = Monokai Extended
+
+[interactive]
+	diffFilter = delta --color-only

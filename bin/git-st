@@ -18,7 +18,7 @@ sub main {
 sub processLine {
   my ($line) = @_;
 
-  if ($line =~ s/^\t(modified:\s+(?:package\.json|yarn\.lock|\.flowconfig))/     ⚠️  $1/) {
+  if ($line =~ s/^\t(modified:\s+(?:package\.json|yarn\.lock|.*build\.gradle|settings\.gradle|Vagrantfile))/    ⚠️   $1/) {
       return RED . $line . RESET;
   }
 
@@ -26,21 +26,22 @@ sub processLine {
     return 'On branch ' . MAGENTA . $1 . RESET . "\n";
   }
 
-  if ($line =~ s/^\tboth modified:/     🔥  both modified:/) {
+  if ($line =~ s/^\tboth modified:/    🔥  both modified:/) {
     my $modified = RED . $line . RESET;
     $modified =~ s/(\w+\.stories\.js)/MAGENTA . $1 . RESET/e;
     return $modified;
   }
 
-  if ($line =~ s/^\tdeleted:/     ❌  deleted:/) {
+  if ($line =~ s/^\tdeleted:/    ❌  deleted:/) {
     my $modified = RED . $line . RESET;
     $modified =~ s/(\w+\.stories\.js)/MAGENTA . $1 . RESET/e;
     return $modified;
   }
 
-  if ($line =~ s/^\tnew file:/     ✅  new file:/) {
+  if ($line =~ s/^\tnew file:/    ✅  new file:/) {
     my $modified = GREEN . $line . RESET;
     $modified =~ s/(__(?:tests|snapshots)__.*)/CYAN . $1 . RESET/e;
+    $modified =~ s/((?:\w+Tests|TestCase|Test)\.java)/CYAN . $1 . RESET/e;
     $modified =~ s/(\w+\.stories\.js)/MAGENTA . $1 . RESET/e;
     return $modified;
   }

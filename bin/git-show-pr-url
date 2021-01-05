@@ -11,9 +11,15 @@ if ($branch eq 'master') {
     exit 0;
 }
 
+my $upstream_branch = 'master';
+
+if ($branch =~ /-(\d)[.-]?(x|\d+)$/) {
+    $upstream_branch = "$1.$2";
+}
+
 print <<EOF;
 
- 🎉  Create a PR by opening https://github.com/$upstream/compare/master...$origin:$branch?expand=1
+ 🎉  Create a PR by opening https://github.com/$upstream/compare/$upstream_branch...$origin:$branch?expand=1
 
 EOF
 
@@ -25,7 +31,17 @@ sub get_repo {
 
     exit 0 if $upstream =~ /^fatal:/;
 
-    my ($repo) = (split /:/, $upstream)[1];
+    chomp $upstream;
+
+    my $repo;
+
+    if ($upstream =~ m#^http#) {
+        $repo = $upstream;
+        $repo =~ s#^https?://github.com/##;
+        return $repo;
+    }
+
+    ($repo) = (split /:/, $upstream)[1];
     $repo = (split /\./, $repo)[0];
 
     return $repo;

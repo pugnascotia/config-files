@@ -8,3 +8,5 @@ let g:ale_fixers = {
 \}
 
 let g:ale_sign_column_always = 1
+
+set suffixesadd+=.ts,.tsx

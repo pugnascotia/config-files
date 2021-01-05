@@ -22,15 +22,14 @@ if [ "$OS_TYPE" = Darwin ]; then
     copy-pass() {
         grep PASS .env | cut -f2 -d= | pbcopy
     }
-fi
 
-lint() {
-    if [ -e package.json ]; then
-        npm run lint "$@"
-    else
-        lint "$@"
-    fi
-}
+    restart-dock() {
+      PID=$(ps x | awk '/MacOS\/Dock$/ { print $1 }')
+      if [[ -n "$PID" ]]; then
+        kill $PID
+      fi
+    }
+fi
 
 yarn-link() {
   local packages
@@ -45,26 +44,21 @@ deugly() {
   prettier "$@" | vim -c "setf javascript" -
 }
 
-refresh-env() {
-  aws-mfa
-
-  if make update-environment; then
-    make show-credentials
-    local newPassword
-    newPassword="$( make show-credentials | awk '/Root password/ { print $NF }' )"
-    sed -i.bak -e "s/E2E_PASSWORD=.*/E2E_PASSWORD=${newPassword}/" ../../../cloud-ui/.env
-    osascript -e 'display notification "update-environment finished" with title "make"'
-  else
-    osascript -e 'display notification "update-environment failed!" with title "make"'
-  fi
-}
-
-tint() {
-  yarn flow && yarn lint-eslint --fix && yarn test
-}
-
 if [ -x "$HOME/bin/git-wrapper" ]; then
   git() {
     git-wrapper "$@"
   }
 fi
+
+function docbldesx() {
+  GIT_HOME="$PWD/.."
+
+  $GIT_HOME/docs/build_docs --doc $PWD/docs/reference/index.asciidoc --resource=$PWD/x-pack/docs/ --chunk 1 && \
+    find $PWD/html_docs -type f | xargs perl -p -i -e 's#((?:src|href)=")/#${1}https://www.elastic.co/#g'
+
+  if [[ $? -eq 0 ]]; then
+    osascript -e 'display notification "Success 🤩" with title "build_docs"'
+  else
+    osascript -e 'display notification "Failed 🤬" with title "build_docs"'
+  fi
+}
