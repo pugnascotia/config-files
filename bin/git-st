@@ -11,7 +11,9 @@ sub main {
   my @lines = qx(git status);
 
   foreach my $line (@lines) {
+    chomp $line;
     print processLine($line);
+    print "\n";
   }
 }
 
@@ -24,6 +26,15 @@ sub processLine {
 
   if ($line =~ /^On branch (.+$)/) {
     return 'On branch ' . MAGENTA . $1 . RESET . "\n";
+  }
+
+  if ($line =~ m/Your branch is ahead of '([^']+)' by (\d+) commit/) {
+    my $upstream = $1;
+    my $commits = $2;
+    my $modified = $line;
+    $modified =~ s/of '$upstream' by/"of '" . RED . $upstream . RESET . "' by"/e;
+    $modified =~ s/by $commits/"by " . GREEN . $commits . RESET/e;
+    return $modified;
   }
 
   if ($line =~ s/^\tboth modified:/    🔥  both modified:/) {
@@ -68,7 +79,7 @@ sub processLine {
     return $modified;
   }
 
-  if ($line =~ s/^\tcopied:/     🌈  copied:/) {
+  if ($line =~ s/^\tcopied:/    🌈  copied:/) {
     my $modified = CYAN . $line . RESET;
     $modified =~ s/(__(?:tests|snapshots)__.*?\b)/GREEN . $1 . CYAN/ge;
     $modified =~ s/(\w+\.stories\.js)/MAGENTA . $1 . CYAN/ge;
@@ -80,12 +91,8 @@ sub processLine {
     return RED . $line . RESET;
   }
 
-  if ($line =~ s/(flow-typed\/.*)\b/CYAN . $1 . RESET/e) {
-    return $line;
-  }
-
   if ($untracked) {
-    if ($line =~ s/^\t(\w+\/.*)\b/'     ✨  ' . RED . $1 . RESET/e) {
+    if ($line =~ s/^\t(\w+\/.*)\b/'    ✨  ' . RED . $1 . RESET/e) {
       return $line;
     }
   }

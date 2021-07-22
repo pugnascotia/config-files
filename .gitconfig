@@ -10,7 +10,7 @@
 	exec = "!exec "
 	history = log -p -M --follow --stat --
 	ls = !git log --color --graph -n 30 --decorate --pretty='format:%Cgreen%h %<(20)%Cred%an %C(auto)%d %Creset%s' $@ | replace-emojis
-	obliterate = push --no-verify --force
+	obliterate = push --no-verify --force-with-lease
 	oops = commit --amend --no-edit
 	push = !git push && git-show-pr-url
 	refresh-branch = !git fetch upstream && git reset --hard upstream/$(git rev-parse --abbrev-ref HEAD)
@@ -18,10 +18,14 @@
 	tags = tag
 	unstage = reset
 
+  # Fix my stupid
+  precommit = !./gradlew precommit
+
 	# Typos. Yes, yes, I know
 	ad = add
-	brnach = branch
 	bracnh = branch
+	bracnh = branch
+	brnach = branch
 	rbanch = branch
 	comit = commit
 	dif = diff
@@ -41,6 +45,9 @@
 	plus-color = "#012800"
 	minus-color = "#340001"
 	syntax-theme = Monokai Extended
+	side-by-side = true
 
 [interactive]
 	diffFilter = delta --color-only
+[pull]
+	ff = only

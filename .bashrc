@@ -166,6 +166,8 @@ if [ "$OS_TYPE" = "Darwin" ]; then
     export JAVA_HOME=$(/usr/libexec/java_home)
     export RUNTIME_JAVA_HOME=$(/usr/libexec/java_home -v 11)
 
+    export JAVA16_HOME=$(/usr/libexec/java_home -v 16)
+    export JAVA15_HOME=$(/usr/libexec/java_home -v 15)
     export JAVA14_HOME=$(/usr/libexec/java_home -v 14)
     export JAVA13_HOME=$(/usr/libexec/java_home -v 13)
     export JAVA12_HOME=$(/usr/libexec/java_home -v 12)
