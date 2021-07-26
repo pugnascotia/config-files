@@ -21,6 +21,6 @@ git clone https://github.com/w0rp/ale
 git clone https://github.com/leafgarland/typescript-vim
 git clone https://github.com/vim-airline/vim-airline
 git clone https://github.com/udalov/kotlin-vim
-git clone https://github.com:nelstrom/vim-subrip
-git clone https://github.com:tpope/vim-surround
+git clone https://github.com/nelstrom/vim-subrip
+git clone https://github.com/tpope/vim-surround
 git clone https://github.com/tpope/vim-repeat

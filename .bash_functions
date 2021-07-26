@@ -62,7 +62,3 @@ function docbldesx() {
     osascript -e 'display notification "Failed 🤬" with title "build_docs"'
   fi
 }
-
-function runDockerTests() {
-  ./gradlew :qa:os:destructiveDistroTest.default${1}-docker --tests org.elasticsearch.packaging.test.DockerTests
-}

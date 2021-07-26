@@ -94,6 +94,7 @@ case "$my_hostname" in
   Rorys-MBP-2) my_hostname="elastic" ;;
   Rorys-MacBook-Pro) my_hostname="elastic" ;;
   MacBook-Pro) my_hostname="elastic" ;;
+  RorysMacBookM1) my_hostname="elastic" ;;
 esac
 
 my_jobs() {
@@ -182,6 +183,7 @@ export IDEA_JDK=$JAVA_HOME
 export PATH="$HOME/bin:$HOME/npm/bin:$JAVA_HOME/bin:/opt/node/bin:/usr/local/sbin:$HOME/.cargo/bin:$PATH"
 
 if [ "$OS_TYPE" = "Darwin" ]; then
+    export PATH="$PATH:/opt/homebrew/bin"
     for VERSION in /usr/local/Cellar/node/*; do
         if [[ -e "$VERSION/bin/node" ]]; then
             export PATH="$PATH:$VERSION/bin"
