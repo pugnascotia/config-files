@@ -48,7 +48,7 @@ if [ "$OS_TYPE" = "Linux" ]; then
   alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 fi
 
-if [ -x /usr/local/bin/timew ]; then
+if hash timew 2>/dev/null; then
   # Time management
   alias SLEEP="timew stop && timew week && pmset sleepnow"
   alias SLEEPNOW="pmset sleepnow"
