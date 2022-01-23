@@ -4,7 +4,7 @@
 [color]
 	ui = true
 [alias]
-	cleanup-branches = !git remote prune origin && git branch -vvv | sed -e 's/^[*+ ]*//' | awk '/: gone]/ { print $1 }' | xargs -p git branch -D
+	cleanup-branches = !git remote prune origin && echo && git branch -vvv | sed -e 's/^[*+ ]*//' | awk '/: gone]/ { print $1 }' | xargs -p git branch -D
 	co = checkout
 	edit = !vim $(git ls-files | grep "$@")
 	exec = "!exec "
@@ -42,8 +42,8 @@
 [fetch]
 	prune = true
 [delta]
-	plus-color = "#012800"
-	minus-color = "#340001"
+	plus-style = syntax "#012800"
+	minus-style = normal "#340001"
 	syntax-theme = Monokai Extended
 	side-by-side = true
 
@@ -51,3 +51,5 @@
 	diffFilter = delta --color-only
 [pull]
 	ff = only
+[init]
+	defaultBranch = main
