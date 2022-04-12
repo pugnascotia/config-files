@@ -165,8 +165,9 @@ export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
 
 if [ "$OS_TYPE" = "Darwin" ]; then
     export JAVA_HOME=$(/usr/libexec/java_home)
-    export RUNTIME_JAVA_HOME=$(/usr/libexec/java_home -v 11)
+    export RUNTIME_JAVA_HOME=$(/usr/libexec/java_home)
 
+    export JAVA17_HOME=$(/usr/libexec/java_home -v 17)
     export JAVA16_HOME=$(/usr/libexec/java_home -v 16)
     export JAVA15_HOME=$(/usr/libexec/java_home -v 15)
     export JAVA14_HOME=$(/usr/libexec/java_home -v 14)
@@ -180,7 +181,7 @@ fi
 
 export IDEA_JDK=$JAVA_HOME
 
-export PATH="$HOME/bin:$HOME/npm/bin:$JAVA_HOME/bin:/opt/node/bin:/usr/local/sbin:$HOME/.cargo/bin:$PATH"
+export PATH="$HOME/bin:$JAVA_HOME/bin:/usr/local/sbin:$PATH"
 
 if [ "$OS_TYPE" = "Darwin" ]; then
     export PATH="$PATH:/opt/homebrew/bin"
@@ -194,6 +195,8 @@ fi
 unset color_reset color_red color_yellow
 unset color_cyan 
 
+export VAULT_ADDR=https://secrets.elastic.co:8200
+
 export GOPATH=$HOME
 
 export NVM_DIR="$HOME/.nvm"
@@ -204,4 +207,8 @@ eval "$(thefuck --alias)"
 
 if [ -f /usr/local/var/ecl.auto ]; then
   source /usr/local/var/ecl.auto
+fi
+
+if hash pyenv 2>/dev/null; then
+  eval "$(pyenv init -)"
 fi
