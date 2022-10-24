@@ -10,10 +10,15 @@ my $untracked = 0;
 sub main {
   my @lines = qx(git status);
 
-  foreach my $line (@lines) {
-    chomp $line;
-    print processLine($line);
-    print "\n";
+  if (-t STDOUT) {
+    foreach my $line (@lines) {
+      chomp $line;
+      print processLine($line);
+      print "\n";
+    }
+  }
+  else {
+    print @lines;
   }
 }
 
