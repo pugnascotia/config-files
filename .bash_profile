@@ -48,3 +48,7 @@ if [ -f '/Users/rory/opt/google-cloud-sdk/completion.bash.inc' ]; then . '/Users
 if hash pyenv 2>/dev/null; then
   eval "$(pyenv init --path)"
 fi
+
+if [[ -f "$HOME/.ripgreprc" ]]; then
+  export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
+fi

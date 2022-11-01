@@ -149,5 +149,10 @@ iabbrev Javascript JavaScript
 let g:ale_fix_on_save = 1
 
 "------- Add a shortcut for the Commentary plugin
-noremap <leader>/ :Commentary<cr>
+noremap <D-/> :Commentary<cr>
+
+
+" Configure vim-markdown
+let g:vim_markdown_frontmatter = 1
+let g:vim_markdown_folding_disabled = 1
 

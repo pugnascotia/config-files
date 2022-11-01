@@ -155,3 +155,7 @@ fi
 if hash pyenv 2>/dev/null; then
   eval "$(pyenv init -)"
 fi
+
+if [[ -f "$HOME/.ripgreprc" ]]; then
+  export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
+fi
