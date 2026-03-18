@@ -1,55 +1,47 @@
 [user]
-	name = Rory Hunter
-	email = roryhunter2@gmail.com
+  name = Rory Hunter
+  email = rory@elastic.co
+  signingkey = FE315DC5B6F082FF
 [color]
-	ui = true
+  ui = true
 [alias]
-	cleanup-branches = !git remote prune origin && echo && git branch -vvv | sed -e 's/^[*+ ]*//' | awk '/: gone]/ { print $1 }' | xargs -p git branch -D
-	co = checkout
-	edit = !vim $(git ls-files | grep "$@")
-	exec = "!exec "
-	history = log -p -M --follow --stat --
-	ls = !git log --color --graph -n 30 --decorate --pretty='format:%Cgreen%h %<(20)%Cred%an %C(auto)%d %Creset%s' $@ | replace-emojis
-	obliterate = push --no-verify --force-with-lease
-	oops = commit --amend --no-edit
-	push = !git push && git-show-pr-url
-	refresh-branch = !git fetch upstream && git reset --hard upstream/$(git rev-parse --abbrev-ref HEAD)
-	root = !pwd
-	tags = tag
-	unstage = reset
+  cleanup-branches = !git remote prune origin upstream && echo && git branch -vvv | sed -e 's/^[*+ ]*//' | awk '/: gone]/ { print $1 }' | xargs -p git branch -D
+  co = checkout
+  edit = !vim $(git ls-files | grep "$@")
+  exec = "!exec "
+  history = log -p -M --follow --stat --
+  ls = !git log --color --graph -n 30 --decorate --pretty='format:%Cgreen%h %<(20)%Cred%an %C(auto)%d %Creset%s' $@ | replace-emojis
+  obliterate = push --no-verify --force-with-lease
+  oops = commit --amend --no-edit
+  push = !git push && git-show-pr-url
+  root = !pwd
+  tags = tag
+  unstage = reset
+  add-modified = !git status | awk '/^\t(both )*modified:/ { print $NF }' | xargs git add
 
-  # Fix my stupid
-  precommit = !./gradlew precommit
-
-	# Typos. Yes, yes, I know
-	ad = add
-	bracnh = branch
-	bracnh = branch
-	brnach = branch
-	rbanch = branch
-	comit = commit
-	dif = diff
-	grpe = grep
-	pish = push
-	piush = push
-	puish = push
-	shwo = show
+  # Typos. Yes, yes, I know
+  ad = add
+  bracnh = branch
+  bracnh = branch
+  brnach = branch
+  rbanch = branch
+  comit = commit
+  dif = diff
+  grpe = grep
+  pish = push
+  piush = push
+  puish = push
+  shwo = show
 [push]
-	default = simple
+  default = simple
+  autoSetupRemote = true
 [core]
-	excludesfile = ~/.gitignore
-	pager = delta
+  excludesfile = ~/.gitignore
 [fetch]
-	prune = true
-[delta]
-	plus-style = syntax "#012800"
-	minus-style = normal "#340001"
-	syntax-theme = Monokai Extended
-	side-by-side = true
-
-[interactive]
-	diffFilter = delta --color-only
+  prune = true
 [pull]
-	ff = only
+  ff = only
 [init]
-	defaultBranch = main
+  defaultBranch = main
+[url "git@github.com:"]
+  insteadOf = https://github.com/
