@@ -1,0 +1,5 @@
+#!/bin/bash
+
+kubectl get deployments -n argocd -o custom-columns=NAME:.metadata.name \
+  | tail -n +2 \
+  | xargs -I {} kubectl scale deployment {} --replicas=0 -n argocd

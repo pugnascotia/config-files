@@ -32,3 +32,16 @@ fi
 #     git-wrapper "$@"
 #   }
 # fi
+
+__devctl() {
+  if ! kubectl config get-contexts -o name | grep -qx "ecstaging-dev-awseuw1-mki-mgmt-unified-denv"; then
+    echo "Missing kubectl context: ecstaging-dev-awseuw1-mki-mgmt-unified-denv"
+    echo "Please log into the VPN, then run:"
+    echo
+    echo "  tsh login --proxy=teleport-proxy.staging.getin.cloud --auth=okta"
+    echo "  tsh kube login dev-awseuw1-mki-mgmt-unified-denv"
+    return 1
+  fi
+
+  ~/bin/devctl "$@"
+}

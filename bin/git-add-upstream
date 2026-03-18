@@ -1,0 +1,5 @@
+#!/bin/bash
+
+REPO="$(git remote  -v | perl -ane 'if (/origin/ && /\(fetch\)$/) { my $repo = $F[1]; $repo =~ s#:[^/]+#:elastic#; print "$repo\n" }')"
+
+git remote add -f upstream "$REPO"

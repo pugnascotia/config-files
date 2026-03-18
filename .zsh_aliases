@@ -54,3 +54,11 @@ if hash timew 2>/dev/null; then
   alias COn="timew continue && timew week"
   alias t=timew
 fi
+
+# Call a helper function
+alias devctl=__devctl
+
+# Run the CLI, don't open the app
+alias cursor=cursor-agent
+
+alias opencode='envchain litellm opencode'

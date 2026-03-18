@@ -97,7 +97,7 @@ sub processLine {
   }
 
   if ($untracked) {
-    if ($line =~ s/^\t(\w+\/.*)\b/'    ✨  ' . RED . $1 . RESET/e) {
+    if ($line =~ s/^\t(.+)/'    ✨  ' . RED . $1 . RESET/e) {
       return $line;
     }
   }

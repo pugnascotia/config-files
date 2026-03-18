@@ -37,3 +37,4 @@ clone https://github.com/tpope/vim-surround
 clone https://github.com/udalov/kotlin-vim
 clone https://github.com/vim-airline/vim-airline
 clone https://github.com/w0rp/ale
+clone https://github.com/jxnblk/vim-mdx-js.git

@@ -118,9 +118,8 @@ autocmd BufNewFile,BufRead * if match(getline(1),"node") >= 0 | set filetype=jav
 
 autocmd BufNewFile,BufEnter,BufRead Dockerfile* setf dockerfile
 
-autocmd BufNewFile,BufEnter,BufRead .eslintrc setf javascript
+autocmd BufNewFile,BufEnter,BufRead .eslintrc setf yaml
 autocmd BufNewFile,BufEnter,BufRead .babelrc setf javascript
-autocmd BufNewFile,BufEnter,BufRead tsconfig.json setf javascript
 
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 
@@ -149,10 +148,5 @@ iabbrev Javascript JavaScript
 let g:ale_fix_on_save = 1
 
 "------- Add a shortcut for the Commentary plugin
-noremap <D-/> :Commentary<cr>
-
-
-" Configure vim-markdown
-let g:vim_markdown_frontmatter = 1
-let g:vim_markdown_folding_disabled = 1
+noremap <leader>/ :Commentary<cr>
 
