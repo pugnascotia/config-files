@@ -10,7 +10,7 @@ function clone () {
   if [[ -d "$dir" ]]; then
     (cd "$dir" && git pull "$repo")
   else
-    git clone "$repo"
+    git clone --depth 1 "$repo"
   fi
 }
 
@@ -29,7 +29,6 @@ clone https://github.com/mxw/vim-jsx
 clone https://github.com/nelstrom/vim-subrip
 clone https://github.com/pangloss/vim-javascript
 clone https://github.com/pearofducks/ansible-vim
-clone https://github.com/reasonml-editor/vim-reason-plus
 clone https://github.com/tpope/vim-commentary
 clone https://github.com/tpope/vim-fugitive
 clone https://github.com/tpope/vim-repeat

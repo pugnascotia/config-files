@@ -42,8 +42,17 @@ if type brew &>/dev/null; then
   FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
 
   autoload -Uz compinit
-  compinit
+  # Skip security audit of completions unless the file is older than 24 hours.
+  # This is a shell startup optimisation.
+  if [[ -n ~/.zcompdump(#qNmh-24) ]]; then
+    compinit -C
+  else
+    compinit
+  fi
 fi
+
+fpath=(~/.zsh $fpath)
+zstyle ':completion:*:*:git:*' script ~/.zsh/git-completion.bash
 
 # Don't put certain commands in the history. These must match the entire # command.
 # zshaddhistory() {
@@ -134,22 +143,15 @@ if [ "$OS_TYPE" = "Darwin" ]; then
     export JAVA11_HOME=$(/usr/libexec/java_home -v 11)
 fi
 
-if [[ "$OS_TYPE" = "Darwin" && -d /usr/local/Cellar/node/ ]]; then
-    export PATH="$PATH:/opt/homebrew/bin"
-    for VERSION in /usr/local/Cellar/node/*; do
-        if [[ -e "$VERSION/bin/node" ]]; then
-            export PATH="$PATH:$VERSION/bin"
-        fi
-    done
+if [[ -d /opt/homebrew/bin ]]; then
+  export PATH="$PATH:/opt/homebrew/bin"
 fi
 
-# export VAULT_ADDR=https://secrets.elastic.co:8200
+if [[ -d /opt/homebrew/opt/python@3.14/libexec/bin ]]; then
+  export PATH="$PATH:/opt/homebrew/opt/python@3.14/libexec/bin"
+fi
 
 export GOPATH=$HOME
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 if [ -f /usr/local/var/ecl.auto ]; then
   source /usr/local/var/ecl.auto
@@ -158,9 +160,6 @@ fi
 if hash pyenv 2>/dev/null; then
   eval "$(pyenv init -)"
 fi
-
-# Completion for kubectl
-source <(kubectl completion zsh)
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/rory/opt/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/rory/opt/google-cloud-sdk/path.zsh.inc'; fi
@@ -186,3 +185,8 @@ unset -f _aws_config_bootstrap
 export DEVENV_TELEMETRY_ALLOW_USERNAME=true
 
 export PATH="$HOME/bin:$PATH:$JAVA_HOME/bin:$HOME/.local/bin"
+
+if command -v zsh-patina >/dev/null 2>&1 ; then
+  # Syntax hightlighting for interactive shell commands
+  eval "$(/opt/homebrew/bin/zsh-patina activate)"
+fi

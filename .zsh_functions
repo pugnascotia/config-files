@@ -22,16 +22,10 @@ if [ "$OS_TYPE" = Darwin ]; then
     restart-dock() {
       PID=$(ps x | awk '/MacOS\/Dock$/ { print $1 }')
       if [[ -n "$PID" ]]; then
-        kill $PID
+        kill "$PID"
       fi
     }
 fi
-
-# if [ -x "$HOME/bin/git-wrapper" ]; then
-#   git() {
-#     git-wrapper "$@"
-#   }
-# fi
 
 __devctl() {
   if ! kubectl config get-contexts -o name | grep -qx "ecstaging-dev-awseuw1-mki-mgmt-unified-denv"; then
@@ -43,5 +37,25 @@ __devctl() {
     return 1
   fi
 
-  ~/bin/devctl "$@"
+  /opt/homebrew/bin/devctl "$@"
+}
+
+# Only initialise nvm when used - use a function that replaces itself
+nvm() {
+  unset -f nvm
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" --no-use  # This loads nvm without resolving a node version
+  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+  nvm "$@" # now run it for real
+}
+
+# Load completions for kubectl on-demand
+kubectl() {
+    command kubectl "$@"
+    local ret=$?
+    if [[ -z $KUBECTL_COMPLETE ]]; then
+        source <(command kubectl completion zsh)
+        KUBECTL_COMPLETE=1
+    fi
+    return $ret
 }

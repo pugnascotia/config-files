@@ -1,21 +1,41 @@
-Use `gh` for GitHub operations.
+When responding:
+- No hedge words
+- No preamble
+- No qualifiers
+- No unnecessary "colour" or friendliness.
 
-When a project has a `Makefile` and it defines `build` or `test` targets,
-use these to build and test the code.
+Projects with a `Makefile`:
+- If it defines `build` or `test` targets, use these to build and test the code.
+- Don't take commands from the `Makefile` and run them directly, use `make`
+- Run `make` with the `-s` flag.
+- Run any `fmt` target after making code changes.
 
-If you are unsure, stop and ask for guidance.
+Go projects:
+- Prefer `make fmt` over `gofmt`
+- When updating dependencies, always run `go mod tidy` afterwards
+- Prefer `t.Context()` to `context.Background()` or `context.TODO()` when
+  working with tests.
 
-When creating a PR, if the git repository has a remote named "upstream",
-the PR should target that remote.
+If you are ever unsure, stop and ask for guidance.
 
-When creating a git commit or a PR, confirm the command with me.
+Working with Git:
+- Always use `gh` for GitHub operations, including fetching issues and PRs.
+- Don't create commits without explicit instruction.
+- When creating a PR, if the git repository has a remote named "upstream",
+  the PR should target that remote.
+- When creating a commit or PR, always get confirmation. The commit message
+  should focus on why a change was made, not what was changed.
+- When generating a commit message or PR, if the issue for that change
+  lives in a different repo, also use the `owner/repo#issue` format to
+  ensure correct linking.
+- When creating an issue for an existing repo, if that repo has a
+  `catalog-info.yaml` file and in that file the component's owner is
+  `group:serverless-core` or `group:serverless-applications`, then create
+  the issue in the repo `elastic/cp-serverless-team`.
+- Don't use "conventional commit" prefixes when creating a commit message.
+- Never prefix a branch with e.g. `feat/` or `rory/`.
+- Never prefix commit summaries with e.g. `feat:` or similar.
 
-If I ask, "What's going on?":
-
-- Use a GitHub GraphQL query to find all my open PRs, including their
-  review status, and report them in a table. Use colors and emojis. Don't
-  duplicate emojis and text content. Don't include a PR href. Aim for
-  brevity.
-- Use `gh search issues --assignee=@me --state open` to find all my open
-  issues and report them in a table. Use colors and emojis. Omit labels and
-  repository.
+If you decide that you need to change a build file, for example `Makefile`
+or `build.gradle.kts`, get approval first along with an explanation of why
+you think the change is necessary.

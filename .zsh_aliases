@@ -55,10 +55,13 @@ if hash timew 2>/dev/null; then
   alias t=timew
 fi
 
-# Call a helper function
+# Call a helper function. See ~/.zsh_functions
 alias devctl=__devctl
 
 # Run the CLI, don't open the app
 alias cursor=cursor-agent
 
-alias opencode='envchain litellm opencode'
+if command -v nono >/dev/null 2>&1 ; then
+  # Wrap Claude with nono to limit filesystem, etc access
+  alias claude="nono run --allow . --profile claude -- $HOME/.local/bin/claude"
+fi

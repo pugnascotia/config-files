@@ -5,11 +5,11 @@
 [color]
   ui = true
 [alias]
-  cleanup-branches = !git remote prune origin upstream && echo && git branch -vvv | sed -e 's/^[*+ ]*//' | awk '/: gone]/ { print $1 }' | xargs -p git branch -D
+  cleanup-branches = !git remote prune $( git remote | grep -E '(origin|upstream)' ) && echo && git branch -vvv | sed -e 's/^[*+ ]*//' | awk '/: gone]/ { print $1 }' | xargs -p git branch -D
   co = checkout
   edit = !vim $(git ls-files | grep "$@")
   exec = "!exec "
-  history = log -p -M --follow --stat --
+  evolution = log -p -M --follow --stat --
   ls = !git log --color --graph -n 30 --decorate --pretty='format:%Cgreen%h %<(20)%Cred%an %C(auto)%d %Creset%s' $@ | replace-emojis
   obliterate = push --no-verify --force-with-lease
   oops = commit --amend --no-edit
