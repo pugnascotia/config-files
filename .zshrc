@@ -11,6 +11,14 @@ fi
 
 set -o vi
 
+# Coloured man pages
+export LESS_TERMCAP_md=$'\e[01;38;5;74m'  # bold → blue (headers)
+export LESS_TERMCAP_me=$'\e[0m'
+export LESS_TERMCAP_so=$'\e[01;33m'        # standout → yellow
+export LESS_TERMCAP_se=$'\e[0m'
+export LESS_TERMCAP_us=$'\e[04;38;5;146m'  # underline → purple (refs)
+export LESS_TERMCAP_ue=$'\e[0m'
+
 # Use <Esc>-_ to fill the last argument in the previous command
 bindkey -M viins '\e_' insert-last-word
 

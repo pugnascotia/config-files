@@ -62,6 +62,6 @@ alias devctl=__devctl
 alias cursor=cursor-agent
 
 if command -v nono >/dev/null 2>&1 ; then
-  # Wrap Claude with nono to limit filesystem, etc access
-  alias claude="nono run --allow . --profile claude -- $HOME/.local/bin/claude"
+  alias claude="nono run --allow . --profile my-claude -- \$HOME/.local/bin/claude"
+  alias omp="nono run --allow . --profile my-omp -- \$HOME/.local/bin/omp"
 fi

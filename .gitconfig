@@ -10,7 +10,7 @@
   edit = !vim $(git ls-files | grep "$@")
   exec = "!exec "
   evolution = log -p -M --follow --stat --
-  ls = !git log --color --graph -n 30 --decorate --pretty='format:%Cgreen%h %<(20)%Cred%an %C(auto)%d %Creset%s' $@ | replace-emojis
+  ls = !git log --color --graph -n 30 --decorate --date=short --pretty='format:%Cblue%ad %Cgreen%h %<(20)%Cred%an %C(auto)%d %Creset%s' $@ | replace-emojis
   obliterate = push --no-verify --force-with-lease
   oops = commit --amend --no-edit
   push = !git push && git-show-pr-url
@@ -37,6 +37,7 @@
   autoSetupRemote = true
 [core]
   excludesfile = ~/.gitignore
+  pager = less --tabs 4
 [fetch]
   prune = true
 [pull]
@@ -44,4 +45,4 @@
 [init]
   defaultBranch = main
 [url "git@github.com:"]
-  insteadOf = https://github.com/
+	insteadOf = https://github.com/
